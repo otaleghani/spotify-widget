@@ -15,7 +15,7 @@ import (
 var (
 	//redirectURI  = "http://localhost:8080/callback"
 	oauth2Config = &oauth2.Config{
-		RedirectURL: redirectURI,
+		RedirectURL: "",
 		Scopes:      []string{"user-read-currently-playing"},
 		Endpoint:    spotify.Endpoint,
 	}
@@ -71,7 +71,7 @@ func GetOauth2(domain string) error {
 	}
 
 	//redirectURI  = "http://localhost:8080/callback"
-  oauth2Config.redirectURI = domain + "/callback"
+  oauth2Config.RedirectURL = domain + "/callback"
 	oauth2Config.ClientID = auth.ClientId
 	oauth2Config.ClientSecret = auth.ClientSecret
 

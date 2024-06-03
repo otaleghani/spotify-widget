@@ -24,7 +24,7 @@ func main() {
   valid, _ := playback.IsRefreshTokenValid() 
 
   if !valid {
-	  if err := playback.GetOauth2(domain); err != nil {
+	  if err := playback.GetOauth2(*domain); err != nil {
 	  	fmt.Println(err)
 	  	return
 	  }
