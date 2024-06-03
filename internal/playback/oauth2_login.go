@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	redirectURI  = "http://localhost:8080/callback"
+	//redirectURI  = "http://localhost:8080/callback"
 	oauth2Config = &oauth2.Config{
 		RedirectURL: redirectURI,
 		Scopes:      []string{"user-read-currently-playing"},
@@ -64,12 +64,14 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 }
 
 // func GetOauth2(id string, secret string) (string, string) {
-func GetOauth2() error {
+func GetOauth2(domain string) error {
 	auth, err := openAuthFile()
 	if err != nil {
 		return err
 	}
 
+	//redirectURI  = "http://localhost:8080/callback"
+  oauth2Config.redirectURI = domain + "/callback"
 	oauth2Config.ClientID = auth.ClientId
 	oauth2Config.ClientSecret = auth.ClientSecret
 
