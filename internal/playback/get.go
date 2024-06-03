@@ -58,7 +58,6 @@ func saveResponseToFile(accessToken string) error {
 	return nil
 }
 
-// func RefreshPlayback(accessToken string) {
 func RefreshPlayback() {
 	ticker := time.NewTicker(10 * time.Second)
 	defer ticker.Stop()
@@ -76,13 +75,18 @@ func RefreshPlayback() {
 			if err != nil {
 				if err.Error() == "401" {
 					// RefreshPlayback(refreshToken)
-					log.Println("Qui prova a refreshare. Se riesce, bene. Altrimenti stoppa il programma.")
+					log.Println("Access token invalid, trying to get a new access token...")
 					break
 				}
 				log.Printf("Error saving response to file: %v", err)
 			} else {
 				log.Println("Response saved to $HOME/.cache/spotify-widget/playback.json")
 			}
+      trackName, artistName, err := parseSpotifyData()
+      CreateImage(trackName, artistName)
+      if err != nil {
+        log.Println("Error: ", err)
+      }
 		}
 	}
 }

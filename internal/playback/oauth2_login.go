@@ -5,7 +5,6 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"log"
-	// "fmt"
 	"net/http"
 
 	"golang.org/x/oauth2"
