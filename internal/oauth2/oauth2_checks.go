@@ -1,4 +1,4 @@
-package playback
+package oauth2
 
 import (
 	"encoding/json"
@@ -8,6 +8,8 @@ import (
 	"strings"
 
 	"golang.org/x/oauth2/spotify"
+
+  "github.com/otaleghani/spotify-widget/internal/database"
 )
 
 type TokenResponse struct {
@@ -23,14 +25,14 @@ type ErrorResponse struct {
 }
 
 func IsRefreshTokenValid() (bool, error) {
-  set := isRefreshTokenSet()
-  if !set {
-    return false, nil
-  }
-  auth, err := openAuthFile()
-  if err != nil {
-    return false, err
-  }
+	set := isRefreshTokenSet()
+	if !set {
+		return false, nil
+	}
+	auth, err := database.openAuthFile()
+	if err != nil {
+		return false, err
+	}
 
 	tokenURL := spotify.Endpoint.TokenURL
 
@@ -65,17 +67,24 @@ func IsRefreshTokenValid() (bool, error) {
 		return false, fmt.Errorf("could not decode token response: %v", err)
 	}
 
+	fmt.Println(tokenResponse)
+	// Here you'll need to save the accesstoken
+  err := database.SaveToken(tokenResponse.AccessToken, auth.RefreshToken)
+  if err != nil {
+    return false, fmt.Errorf("database.SaveToken error: %v", err)
+  }
+
 	return true, nil
 }
 
 func isRefreshTokenSet() bool {
-  auth, err := openAuthFile()
-  if err != nil {
-    return false
-  }
+	auth, err := openAuthFile()
+	if err != nil {
+		return false
+	}
 
-  if auth.RefreshToken != "" {
-    return true
-  }
-  return false
+	if auth.RefreshToken != "" {
+		return true
+	}
+	return false
 }

@@ -15,20 +15,22 @@ func main() {
 
 	// If id and secret are specified, save them
 	if *id != "" && *secret != "" {
-		if err := playback.SaveClientId(*id, *secret); err != nil {
+		if err := database.Setup(*id, *secret); err != nil {
 			fmt.Println(err)
 			return
 		}
 	}
 
-  valid, _ := playback.IsRefreshTokenValid() 
+	// Check if oauthfile is present
 
-  if !valid {
-	  if err := playback.GetOauth2(*domain); err != nil {
-	  	fmt.Println(err)
-	  	return
-	  }
-  }
+	valid, _ := playback.IsRefreshTokenValid()
+
+	if !valid {
+		if err := playback.GetOauth2(*domain); err != nil {
+			fmt.Println(err)
+			return
+		}
+	}
 
 	go playback.RefreshPlayback()
 	select {}

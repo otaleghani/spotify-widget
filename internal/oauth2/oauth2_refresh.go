@@ -12,7 +12,7 @@ import (
 )
 
 // getNewAccessToken refreshes the access token using the refresh token
-func getNewAccessToken(clientID, clientSecret, refreshToken string) (string, error) {
+func GetNewAccessToken(clientID, clientSecret, refreshToken string) (string, error) {
 	tokenURL := spotify.Endpoint.TokenURL
 
 	data := url.Values{}

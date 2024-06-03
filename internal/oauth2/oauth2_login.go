@@ -1,4 +1,4 @@
-package playback
+package oauth2
 
 import (
 	"context"
@@ -9,6 +9,8 @@ import (
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/spotify"
+
+  "github.com/otaleghani/spotify-player/internal/database"
 )
 
 var (
@@ -64,7 +66,7 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 
 // func GetOauth2(id string, secret string) (string, string) {
 func GetOauth2(domain string) error {
-	auth, err := openAuthFile()
+	auth, err := database.openAuthFile()
 	if err != nil {
 		return err
 	}
@@ -84,7 +86,7 @@ func GetOauth2(domain string) error {
 
 	token := <-tokenChan
 
-	err = SaveToken(token.AccessToken, token.RefreshToken)
+	err = database.SaveToken(token.AccessToken, token.RefreshToken)
 	if err != nil {
 		return err
 	}

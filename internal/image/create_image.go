@@ -1,26 +1,32 @@
-package playback
+package image
 
 import (
 	"image"
 	"image/color"
-	// "image/draw"
 	"image/jpeg"
 	"os"
 
 	"github.com/fogleman/gg"
-  "github.com/nfnt/resize"
+	"github.com/nfnt/resize"
+
+  "github.com/otaleghani/internal/spotify-widget/database"
 )
 
-func CreateImage(trackName, artistName string) {
+func CreateImage(trackName, artistName string) error {
 	// Load the image
-	imgFile, err := os.Open("input.jpg") // Replace with your image file
+  imageFilepath, err := database.CurrentImageFilepath()
+  if err != nil {
+    return err
+  }
+
+	imgFile, err := os.Open(imageFilepath) 
 	if err != nil {
-		panic(err)
+    return err
 	}
 	defer imgFile.Close()
 	img, err := jpeg.Decode(imgFile)
 	if err != nil {
-		panic(err)
+    return err
 	}
 
 	// Create a new image with a white background
@@ -38,23 +44,26 @@ func CreateImage(trackName, artistName string) {
 	// Draw the rounded image on the left
 	dc.DrawImage(roundedImage, 10, 10)
 
-
-  center := 50.0
+	center := 50.0
 	// Draw the text on the right
 	dc.SetRGB(1, 1, 1)
 	dc.LoadFontFace("Inter-Bold.ttf", 48) // Replace with your font file
-	dc.DrawString(truncateText(dc, trackName, W-250), 220, center + 48)
+	dc.DrawString(truncateText(dc, trackName, W-250), 220, center+48)
 
 	dc.SetRGB(0.5, 0.5, 0.5)
 	dc.LoadFontFace("Inter-Regular.ttf", 24) // Replace with your font file
-	dc.DrawString(truncateText(dc, artistName, W-250), 220, center + 72 + 24)
+	dc.DrawString(truncateText(dc, artistName, W-250), 220, center+72+24)
 
 	// Save the result
-	dc.SavePNG("output.png")
+  outputFilepath, err := database.WidgetImageFilepath()
+  err != nil {
+    return err
+  }
+	dc.SavePNG(outputFilepath)
 }
 
 func createRoundedImage(img image.Image, w, h int, r float64) image.Image {
-  resizedImg := resize.Thumbnail(uint(w), uint(h), img, resize.Lanczos3)
+	resizedImg := resize.Thumbnail(uint(w), uint(h), img, resize.Lanczos3)
 
 	dc := gg.NewContext(w, h)
 	dc.DrawRoundedRectangle(0, 0, float64(w), float64(h), r)
