@@ -8,8 +8,9 @@ import (
 )
 
 func main() {
-	var id = flag.String("i", "", "help message for flag n")
-	var secret = flag.String("s", "", "help message for flag n")
+	var id = flag.String("i", "", "the client id of your spotify account")
+	var secret = flag.String("s", "", "the secret id of your spotify account")
+	var domain = flag.String("d", "", "the domain this software is currently sitting on")
 	flag.Parse()
 
 	// If id and secret are specified, save them
@@ -23,7 +24,7 @@ func main() {
   valid, _ := playback.IsRefreshTokenValid() 
 
   if !valid {
-	  if err := playback.GetOauth2(); err != nil {
+	  if err := playback.GetOauth2(domain); err != nil {
 	  	fmt.Println(err)
 	  	return
 	  }
