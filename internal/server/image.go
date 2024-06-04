@@ -9,9 +9,7 @@ import (
 )
 
 func Serve() {
-
-	// http.Handle("/", http.StripPrefix("/", http.FileServer(http.Dir("/home/oliviero/.cache/spotify-widget/"))))
-	http.HandleFunc("/", serveImage)
+	http.HandleFunc("/image", serveImage)
 
 	srv := &http.Server{
 		Addr:         ":8081",

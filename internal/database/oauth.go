@@ -62,7 +62,6 @@ func writeAuthFile(auth AuthData) error {
 	if err := os.WriteFile(filePath, encodedData, 0600); err != nil {
 		return fmt.Errorf("could not write file: %v", err)
 	}
-	fmt.Println("saved this: ", auth)
 
 	return nil
 }

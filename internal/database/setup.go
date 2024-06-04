@@ -45,6 +45,7 @@ func Setup(id, secret string) error {
 			return err
 		}
 	}
+
 	return nil
 }
 
