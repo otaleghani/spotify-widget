@@ -30,6 +30,9 @@ func serveImage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
+  w.Header().Set("Cache-Control", "public, max-age=0")
+  w.Header().Set("Expires", time.Now().Add(time.Hour).Format(http.TimeFormat))
+  w.Header().Set("Last-Modified", time.Now().UTC().Format(http.TimeFormat))
 
 	http.ServeFile(w, r, filepath)
 }
