@@ -1,9 +1,9 @@
 package database
 
 import (
-	"file/filepath"
-	"io"
-	"net/http"
+	"fmt"
+	"os"
+	"path/filepath"
 )
 
 func Setup(id, secret string) error {
@@ -24,7 +24,7 @@ func Setup(id, secret string) error {
 		return nil
 	}
 
-	auth, err := openAuthFile()
+	auth, err := OpenAuthFile()
 	if err != nil {
 		return err
 	}
@@ -37,7 +37,7 @@ func Setup(id, secret string) error {
 	}
 
 	fontBoldFilepath := filepath.Join(cacheDir, "assets", "Inter-Bold.ttf")
-	fontRegularFilepath := filepath.Join(cacheDir, "assets", "Inter-Regular.ttf")
+	// fontRegularFilepath := filepath.Join(cacheDir, "assets", "Inter-Regular.ttf")
 
 	if _, err = os.Stat(fontBoldFilepath); os.IsNotExist(err) {
 		err = downloadAssets()
@@ -45,7 +45,6 @@ func Setup(id, secret string) error {
 			return err
 		}
 	}
-
 	return nil
 }
 
@@ -56,50 +55,9 @@ func cacheDirectory() (string, error) {
 	}
 
 	cacheDir := filepath.Join(homeDir, ".cache", "spotify-widget")
-	if err := os.MkdirAll(cacheDir, 0755); err != nil {
+	if err := os.MkdirAll(cacheDir, 0750); err != nil {
 		return "", fmt.Errorf("could not create directory: %v", err)
 	}
 
-	return filePath, nil
-}
-
-func downloadAssets() error {
-	fontBoldFilepath := filepath.Join(cacheDir, "assets", "Inter-Bold.ttf")
-	fontRegularFilepath := filepath.Join(cacheDir, "assets", "Inter-Regular.ttf")
-	fontBoldUrl := "https://github.com/otaleghani/spotify-widget/raw/main/assets/fonts/Inter-Bold.ttf"
-	fontRegularUrl := "https://github.com/otaleghani/spotify-widget/raw/main/assets/fonts/Inter-Regular.ttf"
-
-	fontBoldFile, err := os.Create(fontRegularFilepath)
-	if err != nil {
-		return err
-	}
-	defer out.Close()
-	fontRegularFile, err := os.Create(fontBoldFilepath)
-	if err != nil {
-		return err
-	}
-	defer out.Close()
-
-	// Get the data
-	getFontBold, err := http.Get(fontBoldUrl)
-	if err != nil {
-		return err
-	}
-	defer getFontBold.Body.Close()
-	getFontRegular, err := http.Get(fontRegularUrl)
-	if err != nil {
-		return err
-	}
-	defer getFontRegular.Body.Close()
-
-	_, err = io.Copy(fontBoldFile, getFontBold.Body)
-	if err != nil {
-		return err
-	}
-	_, err = io.Copy(fontRegularFile, getFontRegular.Body)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return cacheDir, nil
 }

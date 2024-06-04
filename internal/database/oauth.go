@@ -3,7 +3,6 @@ package database
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 )
@@ -16,7 +15,7 @@ type AuthData struct {
 }
 
 func SaveToken(access, refresh string) error {
-	auth, err := openAuthFile()
+	auth, err := OpenAuthFile()
 	if err != nil {
 		return err
 	}
@@ -30,13 +29,13 @@ func SaveToken(access, refresh string) error {
 	return nil
 }
 
-func openAuthFile() (AuthData, error) {
+func OpenAuthFile() (AuthData, error) {
 	filePath, err := getAuthPath()
 	if err != nil {
 		return AuthData{}, err
 	}
 
-	rawData, err := os.ReadFile(filePath)
+	rawData, err := os.ReadFile(filepath.Clean(filePath))
 	if err != nil {
 		return AuthData{}, err
 	}
@@ -60,10 +59,21 @@ func writeAuthFile(auth AuthData) error {
 		return fmt.Errorf("could not encode data: %v", err)
 	}
 
-	if err := ioutil.WriteFile(filePath, encodedData, 0644); err != nil {
+	if err := os.WriteFile(filePath, encodedData, 0600); err != nil {
 		return fmt.Errorf("could not write file: %v", err)
 	}
 	fmt.Println("saved this: ", auth)
 
 	return nil
+}
+
+func getAuthPath() (string, error) {
+	cacheDir, err := cacheDirectory()
+	if err != nil {
+		return "", err
+	}
+
+	playbackFilepath := filepath.Join(cacheDir, "auth.json")
+
+	return playbackFilepath, nil
 }

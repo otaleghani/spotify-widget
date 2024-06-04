@@ -33,7 +33,7 @@ func main() {
 		}
 	}
 
-	go server.Serve()
+  go server.Serve()
 	go playback.RefreshPlayback()
 	select {}
 }

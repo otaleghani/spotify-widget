@@ -1,0 +1,54 @@
+name: Tests
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v4
+      - name: Runs tests
+        run: go test ./... -cover
+
+  security:
+    name: Security
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v4
+      - name: Installs gosec
+        run: go install github.com/securego/gosec/v2/cmd/gosec@latest
+      - name: Runs gosec
+        run: gosec ./...
+
+  style:
+    name: Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v4
+      - name: Runs styles checks
+        run: test -z $(go fmt ./...) && echo $?
+
+  linting:
+    name: Linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v4
+      - name: Runs staticcheck
+        uses: dominikh/staticcheck-action@v1
+        with:
+          version: "latest"

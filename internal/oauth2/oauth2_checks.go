@@ -9,7 +9,7 @@ import (
 
 	"golang.org/x/oauth2/spotify"
 
-  "github.com/otaleghani/spotify-widget/internal/database"
+	"github.com/otaleghani/spotify-widget/internal/database"
 )
 
 type TokenResponse struct {
@@ -29,7 +29,7 @@ func IsRefreshTokenValid() (bool, error) {
 	if !set {
 		return false, nil
 	}
-	auth, err := database.openAuthFile()
+	auth, err := database.OpenAuthFile()
 	if err != nil {
 		return false, err
 	}
@@ -69,16 +69,16 @@ func IsRefreshTokenValid() (bool, error) {
 
 	fmt.Println(tokenResponse)
 	// Here you'll need to save the accesstoken
-  err := database.SaveToken(tokenResponse.AccessToken, auth.RefreshToken)
-  if err != nil {
-    return false, fmt.Errorf("database.SaveToken error: %v", err)
-  }
+	err = database.SaveToken(tokenResponse.AccessToken, auth.RefreshToken)
+	if err != nil {
+		return false, fmt.Errorf("database.SaveToken error: %v", err)
+	}
 
 	return true, nil
 }
 
 func isRefreshTokenSet() bool {
-	auth, err := openAuthFile()
+	auth, err := database.OpenAuthFile()
 	if err != nil {
 		return false
 	}

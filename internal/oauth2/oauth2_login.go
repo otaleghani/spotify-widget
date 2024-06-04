@@ -6,11 +6,12 @@ import (
 	"encoding/base64"
 	"log"
 	"net/http"
+	"time"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/spotify"
 
-  "github.com/otaleghani/spotify-player/internal/database"
+	"github.com/otaleghani/spotify-widget/internal/database"
 )
 
 var (
@@ -66,22 +67,29 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 
 // func GetOauth2(id string, secret string) (string, string) {
 func GetOauth2(domain string) error {
-	auth, err := database.openAuthFile()
+	auth, err := database.OpenAuthFile()
 	if err != nil {
 		return err
 	}
 
-	//redirectURI  = "http://localhost:8080/callback"
-  oauth2Config.RedirectURL = domain + "/callback"
+	oauth2Config.RedirectURL = domain + "/callback"
 	oauth2Config.ClientID = auth.ClientId
 	oauth2Config.ClientSecret = auth.ClientSecret
 
 	http.HandleFunc("/", handleMain)
 	http.HandleFunc("/callback", handleCallback)
 
+	srv := &http.Server{
+		Addr:         ":8080",
+		Handler:      nil,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  15 * time.Second,
+	}
+
 	go func() {
 		log.Println("Server is starting at :8080")
-		log.Fatal(http.ListenAndServe(":8080", nil))
+		log.Fatal(srv.ListenAndServe())
 	}()
 
 	token := <-tokenChan
@@ -92,5 +100,4 @@ func GetOauth2(domain string) error {
 	}
 
 	return nil
-	// return token.RefreshToken, token.AccessToken
 }

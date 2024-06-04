@@ -5,28 +5,29 @@ import (
 	"image/color"
 	"image/jpeg"
 	"os"
+	"path/filepath"
 
 	"github.com/fogleman/gg"
 	"github.com/nfnt/resize"
 
-  "github.com/otaleghani/internal/spotify-widget/database"
+	"github.com/otaleghani/spotify-widget/internal/database"
 )
 
 func CreateImage(trackName, artistName string) error {
 	// Load the image
-  imageFilepath, err := database.CurrentImageFilepath()
-  if err != nil {
-    return err
-  }
-
-	imgFile, err := os.Open(imageFilepath) 
+	imageFilepath, err := database.CurrentImageFilepath()
 	if err != nil {
-    return err
+		return err
+	}
+
+	imgFile, err := os.Open(filepath.Clean(imageFilepath))
+	if err != nil {
+		return err
 	}
 	defer imgFile.Close()
 	img, err := jpeg.Decode(imgFile)
 	if err != nil {
-    return err
+		return err
 	}
 
 	// Create a new image with a white background
@@ -44,22 +45,41 @@ func CreateImage(trackName, artistName string) error {
 	// Draw the rounded image on the left
 	dc.DrawImage(roundedImage, 10, 10)
 
+	fontBoldFilepath, err := database.FontBoldFilepath()
+	if err != nil {
+		return err
+	}
+	fontRegularFilepath, err := database.FontRegularFilepath()
+	if err != nil {
+		return err
+	}
+
 	center := 50.0
 	// Draw the text on the right
 	dc.SetRGB(1, 1, 1)
-	dc.LoadFontFace("Inter-Bold.ttf", 48) // Replace with your font file
+	err = dc.LoadFontFace(fontBoldFilepath, 48) // Replace with your font file
+	if err != nil {
+		return err
+	}
 	dc.DrawString(truncateText(dc, trackName, W-250), 220, center+48)
 
 	dc.SetRGB(0.5, 0.5, 0.5)
-	dc.LoadFontFace("Inter-Regular.ttf", 24) // Replace with your font file
+	err = dc.LoadFontFace(fontRegularFilepath, 24) // Replace with your font file
+	if err != nil {
+		return err
+	}
 	dc.DrawString(truncateText(dc, artistName, W-250), 220, center+72+24)
 
 	// Save the result
-  outputFilepath, err := database.WidgetImageFilepath()
-  err != nil {
-    return err
-  }
-	dc.SavePNG(outputFilepath)
+	outputFilepath, err := database.WidgetImageFilepath()
+	if err != nil {
+		return err
+	}
+	err = dc.SavePNG(outputFilepath)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func createRoundedImage(img image.Image, w, h int, r float64) image.Image {

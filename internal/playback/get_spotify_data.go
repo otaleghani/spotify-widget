@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"github.com/otaleghani/spotify-widget/internal/database"
 )
 
 type Data struct {
@@ -31,12 +33,12 @@ type Artist struct {
 }
 
 func parseSpotifyData() (string, string, error) {
-  filepath, err := database.PlaybackFilepath()
-  if err != nil {
-    return "", "", err
-  }
+	filePath, err := database.PlaybackFilepath()
+	if err != nil {
+		return "", "", err
+	}
 
-	rawFile, err := os.ReadFile(filePath)
+	rawFile, err := os.ReadFile(filepath.Clean(filePath))
 	if err != nil {
 		return "", "", fmt.Errorf("could not decode file")
 	}
@@ -50,10 +52,10 @@ func parseSpotifyData() (string, string, error) {
 	trackName := data.Item.Name
 	imageUrl := data.Item.Album.Images[0].Url
 
-  err = database.DownloadCurrentImage(imageUrl)
-  if err != nil {
+	err = database.DownloadCurrentImage(imageUrl)
+	if err != nil {
 		return "", "", fmt.Errorf("error decoding json")
-  }
+	}
 
 	fmt.Println(artistName, trackName, imageUrl)
 	return trackName, artistName, nil
