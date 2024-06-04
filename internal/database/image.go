@@ -10,16 +10,6 @@ import (
 	"strings"
 )
 
-func CurrentImageFilepath() (string, error) {
-	cacheDir, err := cacheDirectory()
-	if err != nil {
-		return "", err
-	}
-	imageFilepath := filepath.Join(cacheDir, "assets", "current.jpg")
-
-	return imageFilepath, nil
-}
-
 func DownloadCurrentImage(url string) error {
 	currentImage, err := CurrentImageFilepath()
 	if err != nil {
@@ -51,6 +41,16 @@ func DownloadCurrentImage(url string) error {
 	}
 
 	return nil
+}
+
+func CurrentImageFilepath() (string, error) {
+	cacheDir, err := cacheDirectory()
+	if err != nil {
+		return "", err
+	}
+	imageFilepath := filepath.Join(cacheDir, "assets", "current.jpg")
+
+	return imageFilepath, nil
 }
 
 func WidgetImageFilepath() (string, error) {

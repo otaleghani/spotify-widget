@@ -67,8 +67,6 @@ func IsRefreshTokenValid() (bool, error) {
 		return false, fmt.Errorf("could not decode token response: %v", err)
 	}
 
-	fmt.Println(tokenResponse)
-	// Here you'll need to save the accesstoken
 	err = database.SaveToken(tokenResponse.AccessToken, auth.RefreshToken)
 	if err != nil {
 		return false, fmt.Errorf("database.SaveToken error: %v", err)

@@ -19,10 +19,8 @@ func SaveToken(access, refresh string) error {
 	if err != nil {
 		return err
 	}
-
 	auth.AccessToken = access
 	auth.RefreshToken = refresh
-
 	if err = writeAuthFile(auth); err != nil {
 		return err
 	}

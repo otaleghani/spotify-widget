@@ -57,21 +57,34 @@ func RefreshPlayback() {
 		return
 	}
 
+	trackName := ""
+	artistName := ""
+
 	for {
 		<-ticker.C
 		err := saveResponseToFile(auth.AccessToken)
 		if err != nil {
 			if err.Error() == "401" {
+				// If access token is not valid, get a new one using refresh token
 				log.Println("Access token invalid, getting a new one...")
 				accessToken, err := oauth2.GetNewAccessToken(auth.ClientId, auth.ClientSecret, auth.RefreshToken)
 				if err != nil {
 					log.Printf("Error oauth2.GetNewAccessToken: %v", err)
 					break
 				}
+
+				// Save new token
 				err = database.SaveToken(accessToken, auth.RefreshToken)
 				if err != nil {
 					log.Printf("Error oauth2.SaveToken: %v", err)
 					break
+				}
+
+				// Re-initialize var auth
+				auth, err = database.OpenAuthFile()
+				if err != nil {
+					fmt.Println("couldn't open auth file")
+					return
 				}
 				continue
 			}
@@ -79,20 +92,28 @@ func RefreshPlayback() {
 		} else {
 			log.Println("Response saved to $HOME/.cache/spotify-widget/playback.json")
 		}
-		trackName, artistName, err := parseSpotifyData()
+
+		newTrackName, newArtistName, err := parseSpotifyData()
 		if err != nil {
 			log.Println("Error: ", err)
 			continue
 		}
-		if trackName == "" {
+
+		if newTrackName == "" {
+			err = image.LastListenedTo(trackName, artistName)
+			if err != nil {
+				log.Println("Error: ", err)
+			}
 			continue
 		}
 
-		err = image.CreateImage(trackName, artistName)
+		trackName = newTrackName
+		artistName = newArtistName
+
+		err = image.CurrentlyListeningTo(trackName, artistName)
 		if err != nil {
 			log.Println("Error: ", err)
 			continue
 		}
 	}
-
 }

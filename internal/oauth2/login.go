@@ -15,7 +15,6 @@ import (
 )
 
 var (
-	//redirectURI  = "http://localhost:8080/callback"
 	oauth2Config = &oauth2.Config{
 		RedirectURL: "",
 		Scopes:      []string{"user-read-currently-playing"},
@@ -65,7 +64,6 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 	tokenChan <- token
 }
 
-// func GetOauth2(id string, secret string) (string, string) {
 func GetOauth2(domain string) error {
 	auth, err := database.OpenAuthFile()
 	if err != nil {

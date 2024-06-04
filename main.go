@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"fmt"
+	"log"
 
 	"github.com/otaleghani/spotify-widget/internal/database"
 	"github.com/otaleghani/spotify-widget/internal/oauth2"
@@ -19,20 +19,21 @@ func main() {
 	// If id and secret are specified, save them
 	if *id != "" && *secret != "" {
 		if err := database.Setup(*id, *secret); err != nil {
-			fmt.Println(err)
+			log.Println("Error: ", err)
 			return
 		}
 	}
 
+	// Checks if RefreshToken is valid
 	valid, _ := oauth2.IsRefreshTokenValid()
-
 	if !valid {
 		if err := oauth2.GetOauth2(*domain); err != nil {
-			fmt.Println(err)
+			log.Println("Error: ", err)
 			return
 		}
 	}
 
+	// Serves the image and starts the playback refresher
 	go server.Serve()
 	go playback.RefreshPlayback()
 	select {}

@@ -3,4 +3,5 @@
 A simple spotify widget for you github profile.
 
 
-- Update keys, 
+- [ ] Add currently offline
+- [ ] 

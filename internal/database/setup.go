@@ -7,45 +7,42 @@ import (
 )
 
 func Setup(id, secret string) error {
-	cacheDir, err := cacheDirectory()
+	authFilepath, err := getAuthPath()
 	if err != nil {
 		return err
 	}
-	authFilepath := filepath.Join(cacheDir, "auth.json")
 
 	if _, err = os.Stat(authFilepath); os.IsNotExist(err) {
 		auth := AuthData{
-			ClientId:     "",
-			ClientSecret: "",
+			ClientId:     id,
+			ClientSecret: secret,
 		}
 		if err = writeAuthFile(auth); err != nil {
 			return err
 		}
 		return nil
+	} else {
+		auth, err := OpenAuthFile()
+		if err != nil {
+			return err
+		}
+		auth.ClientId = id
+		auth.ClientSecret = secret
+		if err = writeAuthFile(auth); err != nil {
+			return err
+		}
 	}
 
-	auth, err := OpenAuthFile()
+	fontBoldFilepath, err := FontBoldFilepath()
 	if err != nil {
 		return err
 	}
-
-	auth.ClientId = id
-	auth.ClientSecret = secret
-
-	if err = writeAuthFile(auth); err != nil {
-		return err
-	}
-
-	fontBoldFilepath := filepath.Join(cacheDir, "assets", "Inter-Bold.ttf")
-	// fontRegularFilepath := filepath.Join(cacheDir, "assets", "Inter-Regular.ttf")
-
 	if _, err = os.Stat(fontBoldFilepath); os.IsNotExist(err) {
 		err = downloadAssets()
 		if err != nil {
 			return err
 		}
 	}
-
 	return nil
 }
 
