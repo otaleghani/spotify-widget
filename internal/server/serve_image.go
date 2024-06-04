@@ -12,7 +12,7 @@ func Serve() {
 	http.HandleFunc("/image", serveImage)
 
 	srv := &http.Server{
-		Addr:         ":8081",
+		Addr:         ":9001",
 		Handler:      nil,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,

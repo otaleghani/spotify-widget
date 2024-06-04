@@ -78,7 +78,7 @@ func GetOauth2(domain string) error {
 	http.HandleFunc("/callback", handleCallback)
 
 	srv := &http.Server{
-		Addr:         ":8080",
+		Addr:         ":9000",
 		Handler:      nil,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
