@@ -86,7 +86,7 @@ func GetOauth2(domain string) error {
 	}
 
 	go func() {
-		log.Println("Server is starting at :8080")
+		log.Println("Server is starting at", src.Addr)
 		log.Fatal(srv.ListenAndServe())
 	}()
 
