@@ -62,3 +62,4 @@ image.yourdomain.com {
 
 - [ ] Top songs
 - [ ] More widget styles
+- [ ] Add link to song
