@@ -87,6 +87,7 @@ func GetOauth2(domain string) error {
 
 	go func() {
 		log.Println("Server is starting at", srv.Addr)
+    log.Println("Visit your domain to login into Spotify")
 		log.Fatal(srv.ListenAndServe())
 	}()
 

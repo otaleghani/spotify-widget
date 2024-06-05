@@ -20,7 +20,6 @@ func Setup(id, secret string) error {
 		if err = writeAuthFile(auth); err != nil {
 			return err
 		}
-		return nil
 	} else {
 		auth, err := OpenAuthFile()
 		if err != nil {

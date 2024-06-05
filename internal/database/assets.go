@@ -29,8 +29,8 @@ func downloadAssets() error {
 
 	fontBoldUrl := "https://github.com/otaleghani/spotify-widget/raw/main/assets/fonts/Inter-Bold.ttf"
 	fontRegularUrl := "https://github.com/otaleghani/spotify-widget/raw/main/assets/fonts/Inter-Regular.ttf"
-	lltImageUrl := "https://github.com/otaleghani/spotify-widget/raw/main/assets/currently-listening-to.png"
-	cltImageUrl := "https://github.com/otaleghani/spotify-widget/raw/main/assets/last-listened-to.png"
+	cltImageUrl := "https://github.com/otaleghani/spotify-widget/raw/main/assets/currently-listening-to.png"
+	lltImageUrl := "https://github.com/otaleghani/spotify-widget/raw/main/assets/last-listened-to.png"
 
 	fontBoldFile, err := os.Create(filepath.Clean(fontBoldFilepath))
 	if err != nil {
@@ -64,6 +64,7 @@ func downloadAssets() error {
 		return err
 	}
 	defer getFontRegular.Body.Close()
+
 	getLltImage, err := http.Get(lltImageUrl)
 	if err != nil {
 		return err
