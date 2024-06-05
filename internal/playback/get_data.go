@@ -96,23 +96,19 @@ func RefreshPlayback() {
 		newTrackName, newArtistName, err := parseSpotifyData()
 		if err != nil {
 			log.Println("Error: ", err)
-			continue
-		}
-
-		if newTrackName == "" {
 			err = image.LastListenedTo(trackName, artistName)
 			if err != nil {
 				log.Println("Error: ", err)
 			}
 			continue
-		} else {
-		  trackName = newTrackName
-		  artistName = newArtistName
-		  err = image.CurrentlyListeningTo(trackName, artistName)
-		  if err != nil {
-		  	log.Println("Error: ", err)
-		  	continue
-		  }
-    }
+		}
+
+		trackName = newTrackName
+		artistName = newArtistName
+		err = image.CurrentlyListeningTo(trackName, artistName)
+		if err != nil {
+			log.Println("Error: ", err)
+			continue
+		}
 	}
 }

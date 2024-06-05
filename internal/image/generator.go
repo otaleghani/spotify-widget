@@ -52,7 +52,6 @@ func CurrentlyListeningTo(trackName, artistName string) error {
 	const squareSize = 196
 	radius := float64(squareSize) / 16
 	roundedImage := createRoundedImage(coverImg, squareSize, squareSize, radius)
-	//roundedImage := createRoundedImage(coverImg, squareSize, squareSize, radius)
 	dc.DrawImage(roundedImage, 16*2, 16*2)
 
 	fontBoldFilepath, err := database.FontBoldFilepath()
@@ -130,7 +129,7 @@ func LastListenedTo(trackName, artistName string) error {
 
 	const squareSize = 196
 	radius := float64(squareSize) / 16
-	roundedImage := createRoundedImage(ResizeAndCropToSquare(coverImg, squareSize), squareSize, squareSize, radius)
+	roundedImage := createRoundedImage(coverImg, squareSize, squareSize, radius)
 	dc.DrawImage(roundedImage, 16*2, 16*2)
 
 	fontBoldFilepath, err := database.FontBoldFilepath()
