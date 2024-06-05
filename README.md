@@ -4,7 +4,7 @@
 
 A simple spotify widget for you Github profile.
 
-<img src="https://spotify_image.talesign.com/image" width="420">
+<img src="https://spotify_image.talesign.com/image?some=thing" width="420">
 
 ## Overview
 
