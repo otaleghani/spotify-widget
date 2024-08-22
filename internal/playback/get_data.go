@@ -91,7 +91,12 @@ func RefreshPlayback() {
 			log.Printf("Error saving response to file: %v", err)
 		} else {
 			log.Println("Response saved to $HOME/.cache/spotify-widget/playback.json")
-		}
+		} 
+
+    // TODO: Wrap this in a else statement and test it against a spotify
+    //       player that has something playing and then gets shut down 
+    //       not gracefully. This usually makes the spotify api send an
+    //       empty object, making this code saving said empty object.
 
 		newTrackName, newArtistName, err := parseSpotifyData()
 		if err != nil {
